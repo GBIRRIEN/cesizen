@@ -1,0 +1,16 @@
+import Image from "next/image";
+
+export default function Footer() {
+  return (
+    <footer className="flex justify-between items-center p-4 bg-white">
+        <div className="flex items-center">
+            <Image src="/logocesizen.svg" alt="Logo" width={100} height={100} />
+        </div>
+        <nav className="flex flex-col space-y-2 text-center text-sm">
+            <a href="#" className="text-gray-700 hover:text-gray-900">Mentions légales</a>
+            <a href="#" className="text-gray-700 hover:text-gray-900 mt-4">Conditions d'utilisation</a>
+            <a href="#" className="text-gray-700 hover:text-gray-900 mt-4">Confidentialité</a>
+        </nav>
+    </footer>
+  );
+}
