@@ -1,8 +1,11 @@
 import Image from "next/image";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"] });
 
 export default function Footer() {
   return (
-    <footer className="flex justify-between items-center p-4 bg-white">
+    <footer className={`flex justify-between items-center p-4 bg-white font-bold ${montserrat.className}`}>
         <div className="flex items-center">
             <Image src="/logocesizen.svg" alt="Logo" width={100} height={100} />
         </div>
