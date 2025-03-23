@@ -1,6 +1,4 @@
 import Image from "next/image";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { Inter, Montserrat } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
@@ -9,7 +7,6 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"]});
 export default function Home() {
   return (
     <div>
-      <Header />
       <div className="my-2">
         <div className="mt-4 grid gap-6 md:grid-cols-2">
           <div className="p-6 rounded-lg shadow-md bg-white">
@@ -62,7 +59,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }
