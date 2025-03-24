@@ -49,7 +49,7 @@ export default function Home() {
                 <img 
                   src="https://cdn.futura-sciences.com/cdn-cgi/image/width=1024,quality=50,format=auto/sources/images/surmenage_au_travail_1.jpeg"
                   alt="ArticleMisEnAvant1"
-                  className="mr-0 w-24 h-16 md:w-30 md:h-15 rounded-lg object-cover"
+                  className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
                 />
                 <div className="flex flex-col items-center md:items-start">
                   <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
@@ -60,12 +60,11 @@ export default function Home() {
                   </p>
                 </div>
               </Card>
-
               <Card className="flex flex-col md:flex-row items-center space-x-4 p-3">
                 <img 
                   src="https://pierrettedesrosiers.com/wp-content/uploads/2018/02/depression-chez-les-hommes-min.jpg"
                   alt="ArticleMisEnAvant2"
-                  className="mr-0 w-24 h-16 md:w-30 md:h-15 rounded-lg object-cover"
+                  className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
                 />
                 <div className="flex flex-col items-center md:items-start">
                   <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
@@ -76,12 +75,11 @@ export default function Home() {
                   </p>
                 </div>
               </Card>
-
               <Card className="flex flex-col md:flex-row items-center space-x-4 p-3">
                 <img 
                   src="https://media.routard.com/image/11/6/famill-vacances.1557116.jpg"
                   alt="ArticleMisEnAvant3"
-                  className="mr-0 w-24 h-16 md:w-30 md:h-15 rounded-lg object-cover"
+                  className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
                 />
                 <div className="flex flex-col items-center md:items-start">
                   <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
@@ -102,16 +100,20 @@ export default function Home() {
             <p><span className="border-b-2 pb-1">Activités</span> ZEN</p>
           </div>
           <div className="mx-8">
-            <Carousel>
-              <CarouselContent>
-                <CarouselItem>1</CarouselItem>
-                <CarouselItem>1</CarouselItem>
-                <CarouselItem>1</CarouselItem>
-                <CarouselItem>1</CarouselItem>
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+            <Card className="px-8">
+              <CardContent>
+                <Carousel>
+                  <CarouselContent>
+                    <CarouselItem><Card>1</Card></CarouselItem>
+                    <CarouselItem><Card>1</Card></CarouselItem>
+                    <CarouselItem><Card>1</Card></CarouselItem>
+                    <CarouselItem><Card>1</Card></CarouselItem>
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
+              </CardContent>
+            </Card>
           </div>
         </Card>
       </div>
