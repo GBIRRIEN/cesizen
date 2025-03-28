@@ -3,16 +3,19 @@ import { useState } from "react";
 import Image from "next/image";
 import { Menu, X, House, Blocks, Newspaper, UserRoundPlus } from "lucide-react"; // Icônes de menu
 import { Montserrat } from "next/font/google";
+import AuthModal from "./AuthModale";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"] });
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <header className={`flex justify-between items-center p-4 shadow-md bg-white font-bold ${montserrat.className}`}>
+    <>
+      <header className={`fixed top-0 left-0 w-full z-50 flex justify-between items-center p-4 shadow-md bg-white font-bold ${montserrat.className}`}>
       <div className="flex items-center">
-        <Image src="/logocesizen.svg" alt="Logo" width={140} height={140} className="w-28 h-auto md:w-34" />
+        <Image src="/ykykcesizen3.svg" alt="Logo" width={140} height={140} className="w-28 h-auto md:w-34" />
       </div>
 
       <nav className="hidden md:flex space-x-6 text-lg">
@@ -28,10 +31,10 @@ export default function Header() {
          <Blocks className="mr-1"/>
           Activités
         </a>
-        <a href="#" className="flex text-gray-600 hover:text-gray-900">
+        <button onClick={() => setIsModalOpen(true)} className="flex text-gray-600 hover:text-gray-900">
           <UserRoundPlus className="mr-1" />
           Se connecter
-        </a>
+        </button>
       </nav>
 
       <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
@@ -56,12 +59,15 @@ export default function Header() {
             <Blocks color="white" className="mr-3" />
             <p className="border-b-2 border-white pb-1">Activités</p>
           </a>
-          <a href="#" className="flex text-white">
+          <button onClick={() => setIsModalOpen(true)} className="flex text-white">
             <UserRoundPlus color="white" className="mr-3" />
             <p className="border-b-2 border-white pb-1">Se connecter</p>
-          </a>
+          </button>
         </nav>
       </div>
-    </header>
+      </header>
+
+    <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 }
