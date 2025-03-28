@@ -2,6 +2,7 @@
 
 import { Inter, Montserrat } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -115,10 +116,12 @@ export default function Home() {
           </Card>
         </div>
         <div className="my-8 flex flex-col items-center">
-            <Button className="bg-green-600 text-white px-6 py-3 font-semibold shadow-md hover:bg-green-800">
+          <Link href="/articles">
+            <Button className="bg-green-600 text-md text-white px-6 py-3 font-semibold shadow-md cursor-pointer hover:bg-green-800">
               Voir plus d'articles
             </Button>
-          </div>
+          </Link>
+        </div>
       </div>
       <div>
       <Card className="p-6">
@@ -130,29 +133,40 @@ export default function Home() {
             <CardContent>
               <Carousel>
                 <CarouselContent>
-                  {[
-                    "https://www.shutterstock.com/image-vector/breathing-icon-set-breath-difficulties-260nw-2425994069.jpg",
-                    "https://visionarymarketing.com/wp-content/uploads/2013/05/jumpstory-download20191206-084704.jpg",
-                    "https://via.placeholder.com/800x400/7fff7f/333333?text=Image+3",
-                    "https://via.placeholder.com/800x400/ff7fff/333333?text=Image+4",
-                  ]
-                    .map((image, index) => (
-                      <CarouselItem key={index}>
-                        <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
-                          <div 
-                            className="absolute inset-0 w-full h-full bg-cover bg-center"
-                            style={{
-                              backgroundImage: `url(${image})`,
-                              filter: "blur(5px)",
-                              transform: "scale(1.1)"
-                            }}
-                          />
-                          <div className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 md:px-6 py-2 md:py-3 rounded-md">
-                            Contenu {index + 1}
-                          </div>
-                        </Card>
-                      </CarouselItem>
-                    ))}
+                  <CarouselItem key="Exercice de respiration">
+                    <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
+                      <div 
+                        className="absolute inset-0 w-full h-full bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(https://www.shutterstock.com/image-vector/breathing-icon-set-breath-difficulties-260nw-2425994069.jpg)`,
+                          filter: "blur(5px)",
+                          transform: "scale(1.1)"
+                        }}
+                      />
+                      <Link href="/activites/respiration">
+                        <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 md:px-6 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
+                          Exercices de respiration
+                        </Button>
+                      </Link>
+                    </Card>
+                  </CarouselItem>
+                  <CarouselItem key="Diagnostic">
+                    <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
+                      <div
+                        className="absolute inset-0 w-full h-full bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(https://visionarymarketing.com/wp-content/uploads/2013/05/jumpstory-download20191206-084704.jpg)`,
+                          filter: "blur(5px)",
+                          transform: "scale(1.1)"
+                        }}
+                      />
+                      <Link href="/activites/diagnostic">
+                        <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
+                          Outils de diagnostic
+                        </Button>
+                      </Link>
+                    </Card>
+                  </CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />

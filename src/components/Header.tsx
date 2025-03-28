@@ -19,19 +19,19 @@ export default function Header() {
       </div>
 
       <nav className="hidden md:flex space-x-6 text-lg">
-        <a href="#" className="flex text-gray-600 hover:text-gray-900">
+        <a href="/" className="flex text-gray-600 hover:text-gray-900">
           <House className="mr-1" />
           Accueil
         </a>
-        <a href="#" className="flex text-gray-600 hover:text-gray-900">
+        <a href="/articles/" className="flex text-gray-600 hover:text-gray-900">
           <Newspaper className="mr-1" />
           Articles
         </a>
-        <a href="#" className="flex text-gray-600 hover:text-gray-900">
+        <a href="/activites/" className="flex text-gray-600 hover:text-gray-900">
          <Blocks className="mr-1"/>
           Activités
         </a>
-        <button onClick={() => setIsModalOpen(true)} className="flex text-gray-600 hover:text-gray-900">
+        <button onClick={() => setIsModalOpen(true)} className="flex text-gray-600 hover:text-gray-900 cursor-pointer">
           <UserRoundPlus className="mr-1" />
           Se connecter
         </button>
@@ -47,15 +47,15 @@ export default function Header() {
         </button>
 
         <nav className="flex flex-col items-start mt-16 space-y-6 pl-6 text-lg">
-          <a href="#" className="flex text-white">
+          <a href="/" className="flex text-white">
             <House color="white" className="mr-3" />
             <p className="border-b-2 border-white pb-1">Accueil</p>
           </a>
-          <a href="#" className="flex text-white">
+          <a href="/articles/" className="flex text-white">
             <Newspaper color="white" className="mr-3" />
             <p className="border-b-2 border-white pb-1">Articles</p>
           </a>
-          <a href="#" className="flex text-white">
+          <a href="/activites/" className="flex text-white">
             <Blocks color="white" className="mr-3" />
             <p className="border-b-2 border-white pb-1">Activités</p>
           </a>
