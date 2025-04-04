@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 interface AuthModalProps {
@@ -8,46 +9,32 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    const response = await fetch("http://localhost:5000/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        nom,
-        prenom,
-        email,
-        password
-      })
-    });
-  
-    const data = await response.json();
-    alert(data.message);
-  }
-
-  const handleLogin = async (e : React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:5000/login", {
-        method:"POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-    } catch (error) {
-      console.error("Erreur lors de la connexion :", error);
-      alert("Une erreur est survenue lors de la connexion.");
-    }
-  }
-
-  const [isLoginMode, setIsLoginMode] = useState(false);
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    setNom("");
+    setPrenom("");
+    setEmail("");
+    setPassword("");
+  }, [isLoginMode]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setNom("");
+      setPrenom("");
+      setEmail("");
+      setPassword("");
+      setErrorMessage("");
+      setSuccessMessage("");
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -59,33 +46,31 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <X size={24} />
         </button>
         <div className="flex justify-center mb-4">
-          <button onClick={() => setIsLoginMode(false)} className={`px-4 py-2 rounded-l-lg ${!isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
+          <button onClick={() => setIsLoginMode(true)} className={`px-4 py-2 rounded-l-lg ${isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
             Se connecter
           </button>
-          <button onClick={() => setIsLoginMode(true)} className={`px-4 py-2 rounded-r-lg ${isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
+          <button onClick={() => setIsLoginMode(false)} className={`px-4 py-2 rounded-r-lg ${!isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
             Créer un compte
           </button>
         </div>
-        {isLoginMode ? (
-          <form className="space-y-4" onSubmit={handleRegister}>
-            <input type="text" placeholder="Nom" className="w-full p-2 border rounded-md" onChange={(nom) => setNom(nom.target.value)} />
-            <input type="text" placeholder="Prénom" className="w-full p-2 border rounded-md" onChange={(prenom) => setPrenom(prenom.target.value)} />
-            <input type="email" placeholder="Email" className="w-full p-2 border rounded-md" onChange={(email) => setEmail(email.target.value)}/>
-            <input type="password" placeholder="Mot de passe" className="w-full p-2 border rounded-md" onChange={(password) => setPassword(password.target.value)}/>
-            <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">S'inscrire</button>
-          </form>
-        ) : (
-          <form className="space-y-4">
-            <input type="email" placeholder="Email" className="w-full p-2 border rounded-md" />
-            <input type="password" placeholder="Mot de passe" className="w-full p-2 border rounded-md" />
-            <p className="text-xs text-gray-500">
-              Pas encore de compte ?
-              <button type="button" onClick={() => setIsLoginMode(true)} className="text-green-600 cursor-pointer ml-2">
-                Créer un compte
-              </button>
-            </p>
-            <button className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Se connecter</button>
-          </form>
+
+        {errorMessage && <p className="text-red-500 text-center mb-2">{errorMessage}</p>}
+
+        <form className="space-y-4">
+          {!isLoginMode && (
+            <>
+              <input type="text" placeholder="Nom" className="w-full p-2 border rounded-md" value={nom} onChange={(e) => setNom(e.target.value)}/>
+              <input type="text" placeholder="Prénom" className="w-full p-2 border rounded-md" value={prenom} onChange={(e) => setPrenom(e.target.value)}/>
+            </>
+          )}
+          <input type="email" placeholder="Email" className="w-full p-2 border rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="password" placeholder="Mot de passe" className="w-full p-2 border rounded-md" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50" disabled={loading}>
+            { loading ? "Chargement..." : isLoginMode ? "Se connecter" : "S'inscrire"}
+          </button>
+        </form>
+        {successMessage && (
+          <p className="mt-4 text-green-600">{successMessage}</p>
         )}
       </div>
     </div>

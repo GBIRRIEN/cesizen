@@ -1,14 +1,6 @@
 import type { Metadata } from "next";
 import Header from "../src/components/Header";
 import Footer from "../src/components/Footer";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card"
 import "./globals.css";
 
 export const metadata: Metadata = {

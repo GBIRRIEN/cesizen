@@ -130,48 +130,46 @@ export default function Home() {
         </div>
         <div className="mx-8">
           <Card className="px-8">
-            <CardContent>
-              <Carousel>
-                <CarouselContent>
-                  <CarouselItem key="Exercice de respiration">
-                    <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
-                      <div 
-                        className="absolute inset-0 w-full h-full bg-cover bg-center"
-                        style={{
-                          backgroundImage: `url(https://www.shutterstock.com/image-vector/breathing-icon-set-breath-difficulties-260nw-2425994069.jpg)`,
-                          filter: "blur(5px)",
-                          transform: "scale(1.1)"
-                        }}
-                      />
-                      <Link href="/activites/respiration">
-                        <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 md:px-6 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
-                          Exercices de respiration
-                        </Button>
-                      </Link>
-                    </Card>
-                  </CarouselItem>
-                  <CarouselItem key="Diagnostic">
-                    <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
-                      <div
-                        className="absolute inset-0 w-full h-full bg-cover bg-center"
-                        style={{
-                          backgroundImage: `url(https://visionarymarketing.com/wp-content/uploads/2013/05/jumpstory-download20191206-084704.jpg)`,
-                          filter: "blur(5px)",
-                          transform: "scale(1.1)"
-                        }}
-                      />
-                      <Link href="/activites/diagnostic">
-                        <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
-                          Outils de diagnostic
-                        </Button>
-                      </Link>
-                    </Card>
-                  </CarouselItem>
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
-            </CardContent>
+            <Carousel>
+              <CarouselContent>
+                <CarouselItem key="Exercice de respiration">
+                  <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
+                    <div 
+                      className="absolute inset-0 w-full h-full bg-cover bg-center"
+                      style={{
+                        backgroundImage: `url(https://www.shutterstock.com/image-vector/breathing-icon-set-breath-difficulties-260nw-2425994069.jpg)`,
+                        filter: "blur(5px)",
+                        transform: "scale(1.1)"
+                      }}
+                    />
+                    <Link href="/activites/respiration">
+                      <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 md:px-6 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
+                        Exercices de respiration
+                      </Button>
+                    </Link>
+                  </Card>
+                </CarouselItem>
+                <CarouselItem key="Diagnostic">
+                  <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
+                    <div
+                      className="absolute inset-0 w-full h-full bg-cover bg-center"
+                      style={{
+                        backgroundImage: `url(https://visionarymarketing.com/wp-content/uploads/2013/05/jumpstory-download20191206-084704.jpg)`,
+                        filter: "blur(5px)",
+                        transform: "scale(1.1)"
+                      }}
+                    />
+                    <Link href="/activites/diagnostic">
+                      <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
+                        Outils de diagnostic
+                      </Button>
+                    </Link>
+                  </Card>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </Card>
         </div>
       </Card>
