@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
+import { supabase } from '@/lib/supabase';
+import { toast } from "sonner";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -17,6 +20,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const router = useRouter();
 
   useEffect(() => {
     setNom("");
@@ -56,7 +61,49 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {errorMessage && <p className="text-red-500 text-center mb-2">{errorMessage}</p>}
 
-        <form className="space-y-4">
+        <form 
+          className="space-y-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            setErrorMessage("");
+            setSuccessMessage("");
+
+            if (isLoginMode) {
+              const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+              });
+
+              if (error) {
+                setErrorMessage("Email ou mot de passe incorrect.");
+              } else {
+                toast.success("Connexion réussie !", {
+                  description: `Bienvenue ${email} !`,
+                });
+                setSuccessMessage("Connexion réussie !");
+                onClose();
+                setTimeout(() => {
+                  router.refresh();
+                }, 300)
+              }
+            } else {
+              const { error } = await supabase.auth.signUp({
+                email,
+                password
+              });
+
+              if (error) {
+                setErrorMessage(error.message);
+              } else {
+                setSuccessMessage("Compte créé ! Vérifie ta boîte mail pour valider ton adresse.");
+                setIsLoginMode(true);
+              }
+            }
+
+            setLoading(false);
+          }}
+        >
           {!isLoginMode && (
             <>
               <input type="text" placeholder="Nom" className="w-full p-2 border rounded-md" value={nom} onChange={(e) => setNom(e.target.value)}/>

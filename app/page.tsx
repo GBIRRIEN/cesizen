@@ -3,6 +3,7 @@
 import { Inter, Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from 'sonner';
 import {
   Card,
   CardContent,

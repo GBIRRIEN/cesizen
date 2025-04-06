@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu, X, House, Blocks, Newspaper, UserRoundPlus } from "lucide-react"; // Icônes de menu
+import { Menu, X, House, Blocks, Newspaper, UserRoundPlus, UserRound } from "lucide-react";
 import { Montserrat } from "next/font/google";
+import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 import AuthModal from "./AuthModale";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"] });
@@ -10,6 +12,24 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"] });
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data : { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+    };
+
+    getSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <>
@@ -31,10 +51,17 @@ export default function Header() {
          <Blocks className="mr-1"/>
           Activités
         </a>
-        <button onClick={() => setIsModalOpen(true)} className="flex text-gray-600 hover:text-gray-900 cursor-pointer">
-          <UserRoundPlus className="mr-1" />
-          Se connecter
-        </button>
+        {user ? (
+          <a href="/compte" className="flex text-gray-600 hover:text-gray-900">
+            <UserRound className="mr-1" />
+            Mon compte
+          </a>
+        ) : (
+          <button onClick={() => setIsModalOpen(true)} className="flex text-gray-600 hover:text-gray-900 cursor-pointer">
+            <UserRoundPlus className="mr-1" />
+            Se connecter
+          </button>
+        )}
       </nav>
 
       <button className="md:hidden text-gray-700" onClick={() => setIsOpen(!isOpen)}>
@@ -59,10 +86,17 @@ export default function Header() {
             <Blocks color="white" className="mr-3" />
             <p className="border-b-2 border-white pb-1">Activités</p>
           </a>
-          <button onClick={() => setIsModalOpen(true)} className="flex text-white">
-            <UserRoundPlus color="white" className="mr-3" />
-            <p className="border-b-2 border-white pb-1">Se connecter</p>
-          </button>
+          {user ? (
+            <a href="/compte" className="flex text-white">
+              <UserRound color="white" className="mr-3" />
+              <p className="border-b-2 border-white pb-1">Mon compte</p>
+            </a>
+          ) : (
+            <button onClick={() => setIsModalOpen(true)} className="flex text-white">
+              <UserRoundPlus color="white" className="mr-3" />
+              <p className="border-b-2 border-white pb-1">Se connecter</p>
+            </button>
+          )}
         </nav>
       </div>
       </header>

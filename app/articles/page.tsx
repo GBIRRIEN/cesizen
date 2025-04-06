@@ -1,6 +1,5 @@
 "use client";
 
-import { categorie } from "@prisma/client";
 import { Inter, Montserrat } from "next/font/google";
 import { useEffect, useState } from "react";
 import {
