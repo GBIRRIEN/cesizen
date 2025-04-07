@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Header from "../src/components/Header";
-import Footer from "../src/components/Footer";
 import { Toaster } from "@/src/components/ui/sonner";
 import "./globals.css";
 
@@ -21,7 +20,6 @@ export default function RootLayout({
         <main className="pt-22 md:pt-28">
           {children}
         </main>
-        <Footer />
         <Toaster />
       </body>
     </html>

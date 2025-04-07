@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { supabase } from '@/lib/supabase';
 import { toast } from "sonner";
+import { sign } from "crypto";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -88,16 +89,32 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 }, 300)
               }
             } else {
-              const { error } = await supabase.auth.signUp({
+              const { data: { user }, error: signupError } = await supabase.auth.signUp({
                 email,
                 password
               });
 
-              if (error) {
-                setErrorMessage(error.message);
-              } else {
-                setSuccessMessage("Compte créé ! Vérifie ta boîte mail pour valider ton adresse.");
-                setIsLoginMode(true);
+              if (signupError) {
+                setErrorMessage(signupError.message);
+              } else if (user) {
+                const { error: complementError } = await supabase
+                  .from("userComplement")
+                  .insert([
+                    {
+                      id: user.id,
+                      nom,
+                      prenom,
+                      role: "User"
+                    }
+                  ]);
+
+                  if (complementError) {
+                    setErrorMessage("Erreur lors de la création du complément utilisateur.");
+                    toast.error("Erreur lors de la création du complément utilisateur.");
+                  } else {
+                    setSuccessMessage("Compte créé ! Vérifie ta boîte mail pour valider ton adresse.");
+                    setIsLoginMode(true);
+                  }
               }
             }
 
