@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import { Inter, Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from 'sonner';
+import { supabase } from '@/lib/supabase';
 import {
   Card,
   CardContent,
@@ -24,7 +26,36 @@ import { Button } from "@/src/components/ui/button";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"]});
 
+interface Article {
+  id: number;
+  title: string;
+  resume: string;
+  image: string;
+  link: string;
+  created_at: string
+}
+
 export default function Home() {
+  const [latestArticles, setLatestArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      const { data, error } = await supabase
+        .from('article')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(4);
+
+      if (error) {
+        console.error("Erreur de récupération des articles :", error.message);
+      } else {
+        setLatestArticles(data);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
   return (
     <div className="px-1 md:px-3">
       <div className="h-screen flex flex-col justify-center items-center text-center bg-green-600 text-white">
@@ -36,85 +67,61 @@ export default function Home() {
       </div>
       <div id="contenus" className="my-2">
         <div className="mt-4 grid gap-6 md:grid-cols-2">
-          <Card className="p-6">
-            <div className={`text-4xl font-bold ${montserrat.className}`}>
-              <p><span className="border-b-2 pb-1">Dernier</span> article</p>
-            </div>
-            <div className="mt-4 grid md:grid-cols-2 gap-4">
-              <img 
-                src="https://www.iroise-bretagne.bzh/assets/uploads/sites/2/2022/07/plage-de-tregana.jpg" 
-                alt="ImageDernierArticle"
-                className="rounded-lg md:w-full"
-              />
-              <div>
-                <h1 className={`text-xl font-semibold ${montserrat.className}`}>« Vivre en bord de mer est bon pour la santé mentale et physique ». Vérification des faits</h1>
-                <p className={`text-gray-500 line-clamp-3 md:line-clamp-8 ${inter.className}`}>Les personnes vivant à proximité du littoral auraient une meilleure santé mentale. C’est ce que démontre l’étude britannique publiée en 2019 dans la revue Health and Place. Les chercheurs de l’Université d’Exeter y expliquent que les ions négatifs présents dans l’air marin améliorent la production de sérotonine</p>
-                <p className={`mt-4 font-bold ${inter.className}`}>
-                  <a href="https://www.curieux.live/2022/05/17/vivre-en-bord-de-mer-est-bon-pour-la-sante-mentale-et-physique-verification-des-faits/#:~:text=%C2%AB%20Vivre%20en%20bord%20de%20mer,V%C3%A9rification%20des%20faits&text=Les%20personnes%20vivant%20%C3%A0%20proximit,la%20revue%20Health%20and%20Place." target="_blank" rel="noopener noreferrer">
-                    <span className="border-b-2 pb-1">={">"}Lire</span> l'article
-                  </a>
-                </p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-6">
-            <div className={`text-4xl font-bold ${montserrat.className}`}>
-              <p><span className="border-b-2 pb-1">Autres</span> articles</p>
-            </div>
-            <div className="my-4 space-y-4">
-              <Card className="flex flex-col md:flex-row items-center space-x-4 p-3">
-                <img 
-                  src="https://cdn.futura-sciences.com/cdn-cgi/image/width=1024,quality=50,format=auto/sources/images/surmenage_au_travail_1.jpeg"
-                  alt="ArticleMisEnAvant1"
-                  className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
-                />
-                <div className="flex flex-col items-center md:items-start">
-                  <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
-                    Surmenage : les signes d’alerte et les conseils pour aller mieux !
-                  </h1>
-                  <p className={`font-bold mt-2 md:mt-0 ${inter.className}`}>
-                    <a href="https://www.qare.fr/sante/surmenage/#:~:text=Le%20meilleur%20moyen%20d'%C3%A9viter,diminuer%20progressivement%20votre%20surmenage%20professionnel." target="_blank" rel="noopener noreferrer">
-                      <span className="border-b-2 pb-1">={">"}Lire</span> l'article
-                    </a>
-                  </p>
+          {latestArticles.length > 0 && (
+            <>
+              <Card className="p-6">
+                <div className={`text-4xl font-bold ${montserrat.className}`}>
+                  <p><span className="border-b-2 pb-1">Dernier</span> article</p>
+                </div>
+                <div className="mt-4 grid md:grid-cols-2 gap-4">
+                  <img 
+                    src={latestArticles[0].image}
+                    alt={`articleImage${latestArticles[0].id}`}
+                    className="rounded-lg md:w-full"
+                  />
+                  <div>
+                    <h1 className={`text-xl font-semibold ${montserrat.className}`}>
+                      {latestArticles[0].title}
+                    </h1>
+                    <p className={`text-gray-500 line-clamp-3 md:line-clamp-8 ${inter.className}`}>
+                      {latestArticles[0].resume}
+                    </p>
+                    <p className={`mt-4 font-bold ${inter.className}`}>
+                      <a href={latestArticles[0].link} target="_blank" rel="noopener noreferrer">
+                        <span className="border-b-2 pb-1">={">"}Lire</span> l'article
+                      </a>
+                    </p>
+                  </div>
                 </div>
               </Card>
-              <Card className="flex flex-col md:flex-row items-center space-x-4 p-3">
-                <img 
-                  src="https://pierrettedesrosiers.com/wp-content/uploads/2018/02/depression-chez-les-hommes-min.jpg"
-                  alt="ArticleMisEnAvant2"
-                  className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
-                />
-                <div className="flex flex-col items-center md:items-start">
-                  <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
-                    Comprendre la dépression
-                  </h1>
-                  <p className={`font-bold mt-2 md:mt-0 ${inter.className}`}>
-                    <a href="https://www.ameli.fr/assure/sante/themes/depression-troubles-depressifs/comprendre-depression" target="_blank" rel="noopener noreferrer">
-                      <span className="border-b-2 pb-1">={">"}Lire</span> l'article
-                    </a>          
-                  </p>
+              <Card className="p-6">
+                <div className={`text-4xl font-bold ${montserrat.className}`}>
+                  <p><span className="border-b-2 pb-1">Autres</span> articles</p>
+                </div>
+                <div className="my-4 space-y-4">
+                  {latestArticles.slice(1).map((article) => (
+                    <Card key={article.id} className="flex flex-col md:flex-row items-center space-x-4 p-3">
+                      <img 
+                        src={article.image}
+                        alt={`articleImage${article.id}`}
+                        className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
+                      />
+                      <div className="flex flex-col items-center md:items-start">
+                        <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
+                          {article.title}
+                        </h1>
+                        <p className={`font-bold mt-2 md:mt-0 ${inter.className}`}>
+                          <a href={article.link} target="_blank" rel="noopener noreferrer">
+                            <span className="border-b-2 pb-1">={">"}Lire</span> l'article
+                          </a>
+                        </p>
+                      </div>
+                    </Card>
+                  ))}
                 </div>
               </Card>
-              <Card className="flex flex-col md:flex-row items-center space-x-4 p-3">
-                <img 
-                  src="https://media.routard.com/image/11/6/famill-vacances.1557116.jpg"
-                  alt="ArticleMisEnAvant3"
-                  className="mr-0 w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
-                />
-                <div className="flex flex-col items-center md:items-start">
-                  <h1 className={`text-sm md:text-lg font-bold ${montserrat.className}`}>
-                    Pourquoi les Vacances Sont Essentielles pour la Santé Mentale ?
-                  </h1>
-                  <p className={`font-bold mt-2 md:mt-0 ${inter.className}`}>
-                    <a href="https://orthocentreberry.fr/blog/pourquoi-les-vacances-sont-essentielles-pour-la-sante-mentale-#:~:text=Les%20vacances%20favorisent%20la%20production,d'activit%C3%A9s%20agr%C3%A9ables%20et%20nouvelles." target="_blank" rel="noopener noreferrer">
-                      <span className="border-b-2 pb-1">={">"}Lire</span> l'article
-                    </a>
-                  </p>
-                </div>
-              </Card>
-            </div>
-          </Card>
+            </>
+          )}
         </div>
         <div className="my-8 flex flex-col items-center">
           <Link href="/articles">

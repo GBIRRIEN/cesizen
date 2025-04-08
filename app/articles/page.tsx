@@ -108,35 +108,37 @@ export default function Articles() {
                 </h2>
                 <div className="space-y-3 p-2">
                   <Carousel>
-                    <CarouselContent className="overflow-hidden w-full">
+                    <CarouselContent className="flex">
                       {filteredArticles.map((article) => (
                         <CarouselItem
                           key={article.id}
-                          className="w-full max-w-full overflow-hidden border-b pb-2 last:border-none flex flex-col md:grid md:grid-cols-[auto_1fr] md:gap-4 items-center md:items-start"
+                          className="min-w-full sm:min-w-[80%] md:min-w-[50%] lg:min-w-[33.33%] px-2"
                         >
-                          <img
-                            src={article.image}
-                            alt={`articleImage${article.id}`}
-                            className="w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
-                          />
-                          <div className="text-center md:text-left">
-                            <h3
-                              className={`text-lg font-bold ${montserrat.className} break-words max-w-[12rem] sm:max-w-full`}
-                            >
-                              {article.title}
-                            </h3>
-                            <p
-                              className={`hidden md:block text-sm text-gray-600 ${inter.className}`}
-                            >
-                              {article.resume}
-                            </p>
-                            <a
-                              href={article.link}
-                              target="_blank"
-                              className={`text-blue-500 hover:underline text-sm ${inter.className}`}
-                            >
-                              Lire l'article
-                            </a>
+                          <div className="border-b pb-2 last:border-none flex flex-col md:grid md:grid-cols-[auto_1fr] md:gap-4 items-center md:items-start">
+                            <img
+                              src={article.image}
+                              alt={`articleImage${article.id}`}
+                              className="w-24 h-16 md:w-36 md:h-20 rounded-lg object-cover flex-shrink-0"
+                            />
+                            <div className="text-center md:text-left">
+                              <h3
+                                className={`text-lg font-bold ${montserrat.className} break-words max-w-[12rem] sm:max-w-full`}
+                              >
+                                {article.title}
+                              </h3>
+                              <p
+                                className={`hidden md:block text-sm text-gray-600 ${inter.className}`}
+                              >
+                                {article.resume}
+                              </p>
+                              <a
+                                href={article.link}
+                                target="_blank"
+                                className={`text-blue-500 hover:underline text-sm ${inter.className}`}
+                              >
+                                Lire l'article
+                              </a>
+                            </div>
                           </div>
                         </CarouselItem>
                       ))}

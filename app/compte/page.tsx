@@ -12,12 +12,14 @@ import {
     CardHeader,
     CardTitle,
   } from "@/src/components/ui/card"
-import { BookmarkCheck, SquareUserRound } from "lucide-react";
+import { BookmarkCheck, SquareUserRound, ShieldCheck, Users, Newspaper } from "lucide-react";
 
 export default function Compte() {
     const router = useRouter();
-    const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [userNom, setUserNom] = useState<string | null>(null);
+    const [userPrenom, setUserPrenom] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -26,8 +28,21 @@ export default function Compte() {
             if (error || !data.user) {
                 router.push("/")
             } else {
-                setUserEmail(data.user.email ?? null);
+                const user = data.user
                 setUserId(data.user.id ?? null);
+
+                const { data: userComplement, error: complementError } = await supabase
+                    .from("userComplement")
+                    .select("*")
+                    .eq("id", user.id)
+                    .single();
+
+                setUserNom(userComplement.nom ?? null);
+                setUserPrenom(userComplement.prenom ?? null);
+
+                if (!complementError && userComplement?.role === "Admin") {
+                    setIsAdmin(true);
+                }
             }
         };
 
@@ -50,8 +65,8 @@ export default function Compte() {
     return (
         <div className="flex flex-col items-center justify-start min-h-screen pt-32 space-y-8 px-4">
             <h1 className="text-2xl font-bold">Espace Mon Compte</h1>
-            {userEmail ? (
-                <p className="text-gray-700">Connecté en tant que : <strong>{userEmail}</strong></p>
+            {userNom && userPrenom ? (
+                <p className="text-gray-700">Bonjour <strong>{userPrenom} {userNom}</strong> !</p>
             ) : (
                 <p className="text-gray-500">Chargement...</p>
             )}
@@ -69,7 +84,33 @@ export default function Compte() {
                     </CardContent>
                 </Card>
             </div>
-            <button onClick={handleLogout} className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+            {isAdmin && (
+                <>
+                    <hr className="w-full border-gray-300 my-8"/>
+                    <h2 className="text-xl font-semibold">Espace Admin</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
+                        <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
+                            <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                                <ShieldCheck size={36} />
+                                <span className="text-lg font-semibold">Gérer les admins</span>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
+                            <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                                <Users size={36} />
+                                <span className="text-lg font-semibold">Gérer les utilisateurs</span>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
+                            <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                                <Newspaper size={36} />
+                                <span className="text-lg font-semibold">Gérer les articles</span>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </>
+            )}
+            <button onClick={handleLogout} className="px-6 py-2 mb-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
                 Se déconnecter
             </button>
         </div>

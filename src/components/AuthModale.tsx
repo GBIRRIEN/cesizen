@@ -18,9 +18,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [prenom, setPrenom] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const router = useRouter();
 
@@ -132,11 +135,52 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50" disabled={loading}>
             { loading ? "Chargement..." : isLoginMode ? "Se connecter" : "S'inscrire"}
           </button>
+          {isLoginMode && !showResetPassword && (
+            <button type="button" onClick={() => setShowResetPassword(true)} className="text-sm text-blue-600 hover:underline">
+              Mot de passe oublié ?
+            </button>
+          )}
         </form>
         {successMessage && (
           <p className="mt-4 text-green-600">{successMessage}</p>
         )}
       </div>
+      {showResetPassword && (
+        <div className="mt-4 space-y-2">
+          <h3 className="text-center font-semibold text-gray-700">Réinitialisation du mot de passe</h3>
+          <input 
+            type="email"
+            placeholder="Ton email"
+            value={resetEmail}
+            onChange={(e) => setResetEmail(e.target.value)}
+            className="w-full p-2 border rounded-md"
+          />
+          <button
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+            onClick={async () => {
+              setLoading(true);
+              setResetSuccess(false);
+              const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+                redirectTo: `${window.location.origin}/reset-password`
+              });
+
+              if (error) {
+                toast.error("Erreur lors de l'envoi du lien", { description: error.message});
+              } else {
+                toast.success("Mail envoyé !", { description: "Vérifie ta boîte mail."});
+                setResetSuccess(true);
+              }
+
+              setLoading(false);
+            }}
+          >
+            {loading ? "Envoi..." : "Envoyer le lien"}
+          </button>
+          {resetSuccess && (
+            <p className="text-green-600 text-center">Email de réinitialisation envoyé !</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
