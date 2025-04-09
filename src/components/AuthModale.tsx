@@ -54,133 +54,137 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-600">
           <X size={24} />
         </button>
-        <div className="flex justify-center mb-4">
-          <button onClick={() => setIsLoginMode(true)} className={`px-4 py-2 rounded-l-lg ${isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
-            Se connecter
-          </button>
-          <button onClick={() => setIsLoginMode(false)} className={`px-4 py-2 rounded-r-lg ${!isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
-            Créer un compte
-          </button>
-        </div>
 
-        {errorMessage && <p className="text-red-500 text-center mb-2">{errorMessage}</p>}
+        {!showResetPassword ? (
+          <>
+            <div className="flex justify-center mb-4">
+              <button onClick={() => setIsLoginMode(true)} className={`px-4 py-2 rounded-l-lg ${isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
+                Se connecter
+              </button>
+              <button onClick={() => setIsLoginMode(false)} className={`px-4 py-2 rounded-r-lg ${!isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
+                Créer un compte
+              </button>
+            </div>
 
-        <form 
-          className="space-y-4"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            setErrorMessage("");
-            setSuccessMessage("");
+            {errorMessage && <p className="text-red-500 text-center mb-2">{errorMessage}</p>}
 
-            if (isLoginMode) {
-              const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-              });
+            <form 
+              className="space-y-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setErrorMessage("");
+                setSuccessMessage("");
 
-              if (error) {
-                setErrorMessage("Email ou mot de passe incorrect.");
-              } else {
-                toast.success("Connexion réussie !", {
-                  description: `Bienvenue ${email} !`,
-                });
-                setSuccessMessage("Connexion réussie !");
-                onClose();
-                setTimeout(() => {
-                  router.refresh();
-                }, 300)
-              }
-            } else {
-              const { data: { user }, error: signupError } = await supabase.auth.signUp({
-                email,
-                password
-              });
+                if (isLoginMode) {
+                  const { error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                  });
 
-              if (signupError) {
-                setErrorMessage(signupError.message);
-              } else if (user) {
-                const { error: complementError } = await supabase
-                  .from("userComplement")
-                  .insert([
-                    {
-                      id: user.id,
-                      nom,
-                      prenom,
-                      role: "User"
-                    }
-                  ]);
-
-                  if (complementError) {
-                    setErrorMessage("Erreur lors de la création du complément utilisateur.");
-                    toast.error("Erreur lors de la création du complément utilisateur.");
+                  if (error) {
+                    setErrorMessage("Email ou mot de passe incorrect.");
                   } else {
-                    setSuccessMessage("Compte créé ! Vérifie ta boîte mail pour valider ton adresse.");
-                    setIsLoginMode(true);
+                    toast.success("Connexion réussie !", {
+                      description: `Bienvenue ${email} !`,
+                    });
+                    setSuccessMessage("Connexion réussie !");
+                    onClose();
+                    setTimeout(() => {
+                      router.refresh();
+                    }, 300)
                   }
-              }
-            }
+                } else {
+                  const { data: { user }, error: signupError } = await supabase.auth.signUp({
+                    email,
+                    password
+                  });
 
-            setLoading(false);
-          }}
-        >
-          {!isLoginMode && (
-            <>
-              <input type="text" placeholder="Nom" className="w-full p-2 border rounded-md" value={nom} onChange={(e) => setNom(e.target.value)}/>
-              <input type="text" placeholder="Prénom" className="w-full p-2 border rounded-md" value={prenom} onChange={(e) => setPrenom(e.target.value)}/>
-            </>
-          )}
-          <input type="email" placeholder="Email" className="w-full p-2 border rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" placeholder="Mot de passe" className="w-full p-2 border rounded-md" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50" disabled={loading}>
-            { loading ? "Chargement..." : isLoginMode ? "Se connecter" : "S'inscrire"}
-          </button>
-          {isLoginMode && !showResetPassword && (
-            <button type="button" onClick={() => setShowResetPassword(true)} className="text-sm text-blue-600 hover:underline">
-              Mot de passe oublié ?
+                  if (signupError) {
+                    setErrorMessage(signupError.message);
+                  } else if (user) {
+                    const { error: complementError } = await supabase
+                      .from("userComplement")
+                      .insert([
+                        {
+                          id: user.id,
+                          nom,
+                          prenom,
+                          role: "User"
+                        }
+                      ]);
+
+                      if (complementError) {
+                        setErrorMessage("Erreur lors de la création du complément utilisateur.");
+                        toast.error("Erreur lors de la création du complément utilisateur.");
+                      } else {
+                        setSuccessMessage("Compte créé ! Vérifie ta boîte mail pour valider ton adresse.");
+                        setIsLoginMode(true);
+                      }
+                  }
+                }
+
+                setLoading(false);
+              }}
+            >
+              {!isLoginMode && (
+                <>
+                  <input type="text" placeholder="Nom" className="w-full p-2 border rounded-md" value={nom} onChange={(e) => setNom(e.target.value)}/>
+                  <input type="text" placeholder="Prénom" className="w-full p-2 border rounded-md" value={prenom} onChange={(e) => setPrenom(e.target.value)}/>
+                </>
+              )}
+              <input type="email" placeholder="Email" className="w-full p-2 border rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input type="password" placeholder="Mot de passe" className="w-full p-2 border rounded-md" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50" disabled={loading}>
+                { loading ? "Chargement..." : isLoginMode ? "Se connecter" : "S'inscrire"}
+              </button>
+              {isLoginMode && !showResetPassword && (
+                <button type="button" onClick={() => setShowResetPassword(true)} className="text-sm text-blue-600 hover:underline">
+                  Mot de passe oublié ?
+                </button>
+              )}
+            </form>
+            {successMessage && (
+              <p className="mt-4 text-green-600">{successMessage}</p>
+            )}
+          </>
+        ) : (
+          <div className="mt-4 space-y-2">
+            <h3 className="text-center font-semibold text-gray-700">Réinitialisation du mot de passe</h3>
+            <input 
+              type="email"
+              placeholder="Ton email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              className="w-full p-2 border rounded-md"
+            />
+            <button
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+              onClick={async () => {
+                setLoading(true);
+                setResetSuccess(false);
+                const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+                  redirectTo: `${window.location.origin}/compte/reset-password`
+                });
+
+                if (error) {
+                  toast.error("Erreur lors de l'envoi du lien", { description: error.message});
+                } else {
+                  toast.success("Mail envoyé !", { description: "Vérifie ta boîte mail."});
+                  setResetSuccess(true);
+                }
+
+                setLoading(false);
+              }}
+            >
+              {loading ? "Envoi..." : "Envoyer le lien"}
             </button>
-          )}
-        </form>
-        {successMessage && (
-          <p className="mt-4 text-green-600">{successMessage}</p>
+            {resetSuccess && (
+              <p className="text-green-600 text-center">Email de réinitialisation envoyé !</p>
+            )}
+          </div>
         )}
       </div>
-      {showResetPassword && (
-        <div className="mt-4 space-y-2">
-          <h3 className="text-center font-semibold text-gray-700">Réinitialisation du mot de passe</h3>
-          <input 
-            type="email"
-            placeholder="Ton email"
-            value={resetEmail}
-            onChange={(e) => setResetEmail(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <button
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-            onClick={async () => {
-              setLoading(true);
-              setResetSuccess(false);
-              const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-                redirectTo: `${window.location.origin}/reset-password`
-              });
-
-              if (error) {
-                toast.error("Erreur lors de l'envoi du lien", { description: error.message});
-              } else {
-                toast.success("Mail envoyé !", { description: "Vérifie ta boîte mail."});
-                setResetSuccess(true);
-              }
-
-              setLoading(false);
-            }}
-          >
-            {loading ? "Envoi..." : "Envoyer le lien"}
-          </button>
-          {resetSuccess && (
-            <p className="text-green-600 text-center">Email de réinitialisation envoyé !</p>
-          )}
-        </div>
-      )}
     </div>
   );
 }
