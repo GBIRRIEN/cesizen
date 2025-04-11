@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Inter, Montserrat } from "next/font/google";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from 'sonner';
@@ -37,6 +38,40 @@ interface Article {
 
 export default function Home() {
   const [latestArticles, setLatestArticles] = useState<Article[]>([]);
+  const [savedArticles, setSavedArticles] = useState<{ article_id: string }[]>([]);
+  const [user, setUser] = useState<any>(null);
+
+  const isArticleSaved = (articleId: number) => {
+    return savedArticles.some((saved) => saved.article_id === String(articleId));
+  };
+
+  const handleToggleSave = async (articleId: number) => {
+    const articleIdStr = String(articleId);
+
+    if (!user) {
+      return;
+    }
+
+    const alreadySaved = isArticleSaved(articleId);
+
+    if (alreadySaved) {
+      await supabase
+        .from("articles_saves")
+        .delete()
+        .eq("id_user", user.id)
+        .eq("id_art", articleId);
+
+      setSavedArticles((prev) => 
+        prev.filter((a) => a.article_id !== articleIdStr)
+      );
+    } else {
+      await supabase
+        .from("articles_saves")
+        .insert({ id_user: user.id, id_art: articleId });
+
+      setSavedArticles((prev) => [...prev, { article_id: articleIdStr }]);
+    }
+  };
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -53,7 +88,24 @@ export default function Home() {
       }
     };
 
+    const fetchUserAndSavedArticles = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+
+        const { data: saved, error: savedError } = await supabase
+          .from("articles_saves")
+          .select("id_art")
+          .eq("id_user", user.id);
+
+        if (saved) {
+          setSavedArticles(saved.map((s) => ({ article_id: String(s.id_art) })));
+        }
+      }
+    };
+
     fetchArticles();
+    fetchUserAndSavedArticles();
   }, []);
 
   return (
@@ -73,7 +125,15 @@ export default function Home() {
                 <div className={`text-4xl font-bold ${montserrat.className}`}>
                   <p><span className="border-b-2 pb-1">Dernier</span> article</p>
                 </div>
-                <div className="mt-4 grid md:grid-cols-2 gap-4">
+                <div className="mt-4 grid md:grid-cols-2 gap-4 relative">
+                  {user && (
+                    <button 
+                      onClick={() => handleToggleSave(latestArticles[0].id)}
+                      className="absolute top-2 right-2 md:top-4 md:left-4 text-white hover:text-green-300 transition z-10"
+                    >
+                      {isArticleSaved(latestArticles[0].id) ? <BookmarkCheck size={24} /> : <Bookmark size={24} />}
+                    </button>
+                  )}
                   <img 
                     src={latestArticles[0].image}
                     alt={`articleImage${latestArticles[0].id}`}
@@ -100,7 +160,15 @@ export default function Home() {
                 </div>
                 <div className="my-4 space-y-4">
                   {latestArticles.slice(1).map((article) => (
-                    <Card key={article.id} className="flex flex-col md:flex-row items-center space-x-4 p-3">
+                    <Card key={article.id} className="relative flex flex-col md:flex-row items-center space-x-4 p-3">
+                      {user && (
+                        <button
+                          onClick={() => handleToggleSave(article.id)}
+                          className="absolute bottom-2 right-2 text-gray-600 hover:text-green-600 transition"
+                        > 
+                          {isArticleSaved(article.id) ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
+                        </button>
+                      )}
                       <img 
                         src={article.image}
                         alt={`articleImage${article.id}`}

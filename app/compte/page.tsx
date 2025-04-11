@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -71,18 +72,22 @@ export default function Compte() {
                 <p className="text-gray-500">Chargement...</p>
             )}
             <div className="grid grid-cols-2 md:grid-cols-2 gap-6 w-full max-w-2xl">
-                <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
-                    <CardContent className="flex flex-col items-center space-y-2 pt-4">
-                        <SquareUserRound size={36} />
-                        <span className="text-lg font-semibold">Gérer mon compte</span>
-                    </CardContent>
-                </Card>
-                <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
-                    <CardContent className="flex flex-col items-center space-y-2 pt-4">
-                        <BookmarkCheck size={36} />
-                        <span className="text-lg font-semibold">Articles enregistrés</span>
-                    </CardContent>
-                </Card>
+                <Link href="/compte/gestion-compte">
+                    <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
+                        <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                            <SquareUserRound size={36} />
+                            <span className="text-lg font-semibold">Gérer mon compte</span>
+                        </CardContent>
+                    </Card>
+                </Link>
+                <Link href="/compte/articles-saves">
+                    <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
+                        <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                            <BookmarkCheck size={36} />
+                            <span className="text-lg font-semibold">Articles enregistrés</span>
+                        </CardContent>
+                    </Card>
+                </Link>
             </div>
             {isAdmin && (
                 <>
