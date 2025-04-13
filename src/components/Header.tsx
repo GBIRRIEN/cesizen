@@ -35,7 +35,9 @@ export default function Header() {
     <>
       <header className={`fixed top-0 left-0 w-full z-50 flex justify-between items-center p-4 shadow-md bg-white font-bold ${montserrat.className}`}>
       <div className="flex items-center">
-        <Image src="/ykykcesizen3.svg" alt="Logo" width={140} height={140} className="w-28 h-auto md:w-34" />
+        <a href="/">
+          <Image src="/ykykcesizen3.svg" alt="Logo" width={140} height={140} className="w-28 h-auto md:w-34" />
+        </a>
       </div>
 
       <nav className="hidden md:flex space-x-6 text-lg">

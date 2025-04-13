@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Inter, Montserrat } from "next/font/google";
-import { Bookmark, BookmarkCheck } from "lucide-react";
+import { Bookmark, BookmarkCheck, Brain, HeartPulse } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from 'sonner';
@@ -37,6 +37,26 @@ interface Article {
 }
 
 export default function Home() {
+  const activites = [
+      {
+          icon: <HeartPulse className="text-green-600 w-6 h-6 mr-2" />,
+          title: "Exercices de respiration",
+          description:
+              "Ces exercices vous aident à réduire le stress et à calmer votre système nerveux. "
+              + "Ils favorisent une meilleure oxygénation du cerveau et une sensation immédiate de détente.",
+          link: "respiration"
+      },
+      {
+          icon: <Brain className="text-green-600 w-6 h-6 mr-2" />,
+          title: "Outil de diagnostic",
+          description: 
+              "Cet outil vous permet de faire un point sur votre état mental actuel. "
+              + "Ils vous aident à mieux comprendre vos émotions, à repérer les signes de fatigue mentale "
+              + "et à adopter des actions adaptées pour retrouver votre équilibre.",
+          link: "diagnostic"
+      }
+  ];
+
   const [latestArticles, setLatestArticles] = useState<Article[]>([]);
   const [savedArticles, setSavedArticles] = useState<{ article_id: string }[]>([]);
   const [user, setUser] = useState<any>(null);
@@ -208,40 +228,25 @@ export default function Home() {
           <Card className="px-8">
             <Carousel>
               <CarouselContent>
-                <CarouselItem key="Exercice de respiration">
-                  <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
-                    <div 
-                      className="absolute inset-0 w-full h-full bg-cover bg-center"
-                      style={{
-                        backgroundImage: `url(https://www.shutterstock.com/image-vector/breathing-icon-set-breath-difficulties-260nw-2425994069.jpg)`,
-                        filter: "blur(5px)",
-                        transform: "scale(1.1)"
-                      }}
-                    />
-                    <Link href="/activites/respiration">
-                      <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 md:px-6 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
-                        Exercices de respiration
-                      </Button>
+                {activites.map((activite, index) => (
+                  <CarouselItem key={activite.title}>
+                    <Link href={`/activites/${activite.link}`}>
+                      <Card key={index} className="bg-white shadow-sm border-rounded-2xl cursor-pointer">
+                        <CardContent className="p-4">
+                            <div className="flex items-center mb-2">
+                                {activite.icon}
+                                <h2 className={`text-xl font-semibold ${montserrat.className}`}>
+                                    {activite.title}
+                                </h2>
+                            </div>
+                            <p className={`text-gray-600 text-sm ${inter.className}`}>
+                                {activite.description}
+                            </p>
+                        </CardContent>
+                      </Card>
                     </Link>
-                  </Card>
-                </CarouselItem>
-                <CarouselItem key="Diagnostic">
-                  <Card className="relative flex items-center justify-center h-48 md:h-80 rounded-lg overflow-hidden">
-                    <div
-                      className="absolute inset-0 w-full h-full bg-cover bg-center"
-                      style={{
-                        backgroundImage: `url(https://visionarymarketing.com/wp-content/uploads/2013/05/jumpstory-download20191206-084704.jpg)`,
-                        filter: "blur(5px)",
-                        transform: "scale(1.1)"
-                      }}
-                    />
-                    <Link href="/activites/diagnostic">
-                      <Button className="relative z-10 text-white text-sm md:text-2xl font-bold bg-green-600 px-4 py-2 cursor-pointer md:px-8 md:py-4 rounded-md">
-                        Outils de diagnostic
-                      </Button>
-                    </Link>
-                  </Card>
-                </CarouselItem>
+                  </CarouselItem>
+                ))}
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />

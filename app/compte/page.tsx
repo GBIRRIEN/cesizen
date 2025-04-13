@@ -95,22 +95,28 @@ export default function Compte() {
                     <h2 className="text-xl font-semibold">Espace Admin</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
                         <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
-                            <CardContent className="flex flex-col items-center space-y-2 pt-4">
-                                <ShieldCheck size={36} />
-                                <span className="text-lg font-semibold">Gérer les admins</span>
-                            </CardContent>
+                            <Link href="/compte/admin/gestion-admins">
+                                <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                                    <ShieldCheck size={36} />
+                                    <span className="text-lg font-semibold">Gérer les admins</span>
+                                </CardContent>
+                            </Link>
                         </Card>
                         <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
-                            <CardContent className="flex flex-col items-center space-y-2 pt-4">
-                                <Users size={36} />
-                                <span className="text-lg font-semibold">Gérer les utilisateurs</span>
-                            </CardContent>
+                            <Link href="/compte/admin/gestion-users">
+                                <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                                    <Users size={36} />
+                                    <span className="text-lg font-semibold">Gérer les utilisateurs</span>
+                                </CardContent>
+                            </Link>
                         </Card>
                         <Card className="cursor-pointer hover:shadow-lg transition p-6 text-center">
-                            <CardContent className="flex flex-col items-center space-y-2 pt-4">
-                                <Newspaper size={36} />
-                                <span className="text-lg font-semibold">Gérer les articles</span>
-                            </CardContent>
+                            <Link href="/compte/admin/gestion-articles">
+                                <CardContent className="flex flex-col items-center space-y-2 pt-4">
+                                    <Newspaper size={36} />
+                                    <span className="text-lg font-semibold">Gérer les articles</span>
+                                </CardContent>
+                            </Link>
                         </Card>
                     </div>
                 </>
