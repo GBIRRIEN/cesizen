@@ -1,72 +1,41 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { Inter, Montserrat } from "next/font/google"
-import { match } from "assert";
+import { fetchAffirmations, fetchResultsConfig, fetchUserRole } from "./service";
+import { calculateScore, getDiagnosticMessage } from "./controller";
+import { Affirmation, DiagnosticResult } from "@/types";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"]});
 
-type Option = {
-    id: number;
-    libelle: string;
-    points: number;
-}
-
 export default function Diagnostic() {
-    const [options, setOptions] = useState<Option[]>([]);
+    const [options, setOptions] = useState<Affirmation[]>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [score, setScore] = useState<number | null>(null);
     const [message, setMessage] = useState<string | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [resultsConfig, setResultsConfig] = useState<
-        { score_min: number; score_max: number; message: string }[]
-    >([]);
+    const [resultsConfig, setResultsConfig] = useState<DiagnosticResult[]>([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const [{ data: affirmations, error: err1 }, { data: config, error: err2 }] = await Promise.all([
-                supabase.from("affirmations").select("id, libelle, points"),
-                supabase.from("diagnostic_results").select("score_min, score_max, message")
-            ]);
-
-            if (err1) {
-                console.error("Erreur affirmations: ", err1.message);
-            } else {
-                setOptions(affirmations || []);
-            }
-
-            if (err2) {
-                console.error("Erreur résultats: ", err2.message);
-            } else {
-                setResultsConfig(config ||[]);
+        const init = async () => {
+            try {
+                const [opt, conf, role] = await Promise.all([
+                    fetchAffirmations(),
+                    fetchResultsConfig(),
+                    fetchUserRole()
+                ]);
+                setOptions(opt);
+                setResultsConfig(conf);
+                setIsAdmin(role === "Admin");
+            } catch (e) {
+                console.error(e);
             }
         };
-
-        const fetchUser = async () => {
-            const { data, error } = await supabase.auth.getUser();
-            
-            if (data.user) {
-                const user = data.user;
-
-                const { data: userComplement, error: complementError } = await supabase
-                    .from("userComplement")
-                    .select("*")
-                    .eq("id", user.id)
-                    .single();
-
-                if (!complementError && userComplement?.role === "Admin") {
-                    setIsAdmin(true);
-                }
-            }
-        }
-
-        fetchData();
-        fetchUser();
+        init();
     }, []);
 
     const toggleOption = (id: number) => {
@@ -76,22 +45,10 @@ export default function Diagnostic() {
     };
 
     const submitQuizz = () => {
-        const total = selected.reduce((acc, id) => {
-            const option = options.find((opt) => opt.id == id);
-            return acc + (option?.points || 0);
-        }, 0);
-
+        const total = calculateScore(selected, options);
+        const msg = getDiagnosticMessage(total, resultsConfig);
         setScore(total);
-
-        const matchedResult = resultsConfig.find(
-            (r) => total >= r.score_min && total <= r.score_max
-        );
-
-        if (matchedResult) {
-            setMessage(matchedResult.message);
-        } else {
-            setMessage("Aucun résultat correspondant trouvé.");
-        }
+        setMessage(msg);
     };
 
     return (

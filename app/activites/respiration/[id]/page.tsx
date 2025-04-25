@@ -4,44 +4,31 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/src/components/ui/button";
-import { set } from "react-hook-form";
-
-type Exercice = {
-    id: string
-    inspiration: number
-    apnee: number
-    expiration: number
-}
-
-type Phase = "inspiration" | "apnee" | "expiration"
+import { Phase, ExerciceRespiration } from "@/types";
+import { fetchExerciceById } from "./service";
+import { getNextPhase, getPhaseLabel } from "./controller";
 
 export default function ExerciceRespirationPage() {
     const params = useParams();
     const router = useRouter();
-    const [exercice, setExercice] = useState<Exercice | null>(null)
+    const [exercice, setExercice] = useState<ExerciceRespiration | null>(null)
     const [phase, setPhase] = useState<Phase>("inspiration");
     const [timeLeft, setTimeLeft] = useState(0);
     const [isRunning, setIsRunning] = useState(false)
     const [hasStarted, setHasStarted] = useState(false)
 
     useEffect(() => {
-        const fetchExercice = async () => {
-            const { data } = await supabase
-                .from("exercice_respiration")
-                .select("*")
-                .eq("id", params.id)
-                .single()
-
+        const loadExercice = async () => {
+            const data = await fetchExerciceById(params.id as string);
             if (data) {
-                setExercice(data)
-                setPhase("inspiration")
-                setTimeLeft(data.inspiration)
-                setIsRunning(true)
+                setExercice(data);
+                setPhase("inspiration");
+                setTimeLeft(data.inspiration!);
+                setIsRunning(true);
             }
-        }
-
-        fetchExercice()
-    }, [params.id])
+        };
+        loadExercice();
+    }, [params.id]);
 
     useEffect(() => {
         if (!isRunning || !exercice) {
@@ -50,47 +37,21 @@ export default function ExerciceRespirationPage() {
 
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
-                if (prev > 1) {
-                    return prev - 1
-                }
+                if (prev > 1) return prev - 1;
 
-                switch (phase) {
-                    case "inspiration":
-                        if (exercice.apnee > 0) {
-                            setPhase("apnee")
-                            return exercice.apnee
-                        } else {
-                            setPhase("expiration")
-                            return exercice.expiration
-                        }
-                    case "apnee":
-                        setPhase("expiration")
-                        return exercice.expiration
-                    case "expiration":
-                        setPhase("inspiration")
-                        return exercice.inspiration
-                }
-            })
-        }, 1000)
+                const { next, duration } = getNextPhase(phase, exercice);
+                setPhase(next);
+                return duration;
+            });
+        }, 1000);
 
         return () => clearInterval(timer)
     }, [isRunning, phase, exercice])
 
-    const getPhaseLabel = (p: Phase) => {
-        switch (p) {
-            case "inspiration":
-                return "Inspirez..."
-            case "apnee":
-                return "Retenez..."
-            case "expiration":
-                return "Expirez..."
-        }
-    }
-
     const handleStart = () => {
         if (exercice) {
             setPhase("inspiration")
-            setTimeLeft(exercice.inspiration)
+            setTimeLeft(exercice.inspiration!)
             setHasStarted(true)
             setIsRunning(true)
         }
@@ -101,7 +62,7 @@ export default function ExerciceRespirationPage() {
         setHasStarted(false)
         if (exercice) {
             setPhase("inspiration")
-            setTimeLeft(exercice.inspiration)
+            setTimeLeft(exercice.inspiration!)
         }
     }
 

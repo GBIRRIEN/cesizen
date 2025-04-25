@@ -1,59 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
-import { toast } from "sonner";
-import { Input } from "@/src/components/ui/input";
+import { fetchUsersController, deleteUserController } from "./controller";
+import { UserComplement } from "@/types";
 
-type User = {
-    id: string;
-    nom: string;
-    prenom: string;
-    email: string;
-}
 
 export default function GestionUsers() {
-    const [users, setUsers] = useState<User[]>([]);
-    const router = useRouter();
+    const [users, setUsers] = useState<UserComplement[]>([]);
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            const res = await fetch("/api/get-users", {
-                method: "GET"
-            });
-
-            if (!res.ok) {
-                toast.error("Erreur lors du chargement des utilisateurs.");
-                return;
-            }
-
-            const data = await res.json();
-            setUsers(data.users);
+        const loadUsers = async () => {
+            const data = await fetchUsersController();
+            if (data) setUsers(data);
         };
-
-        fetchUsers();
+        loadUsers();
     }, []);
 
-    const handleDelete = async (user: User) => {
+    const handleDelete = async (user: UserComplement) => {
         const confirmed = window.confirm(`Confirmez-vous la suppression du compte de ${user.prenom} ${user.nom} ? Cette action est irréversible.`);
+        if (!confirmed) return;
 
-        if (!confirmed) {
-            return;
-        }
-
-        const res = await fetch("/api/delete-user", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: user.id })
-        });
-
-        if (res.ok) {
+        const success = await deleteUserController(user.id);
+        if (success) {
             setUsers((prev) => prev.filter((u) => u.id !== user.id));
-            toast.success("Compte supprimé avec succès");
-        } else {
-            toast.error("Erreur lors de la suppression.");
         }
     };
 

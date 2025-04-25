@@ -1,59 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { toast } from 'sonner';
+import { useResetPasswordController } from './controller';
 
 export default function ResetPassordPage() {
-    const router = useRouter();
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [canReset, setCanReset] = useState(false);
-
-    useEffect(() => {
-        const checkSession = async () => {
-            const { data, error } = await supabase.auth.getUser();
-
-            if (data.user && !error) {
-                setCanReset(true);
-            } else {
-                toast.error("Lien invalide ou expiré.");
-                router.push("/");
-            }
-        };
-
-        checkSession();
-    }, [router]);
-
-    const handleReset = async () => {
-        if (newPassword.length < 6) {
-            toast.error("Le mot de passe doit contenir au moins 6 caractères.");
-            return;
-        } 
-
-        if (newPassword !== confirmPassword) {
-            toast.error("Les mots de passe ne correspondent pas.");
-            return;
-        }
-
-        setLoading(true);
-        const { error } = await supabase.auth.updateUser({
-            password: newPassword
-        });
-
-        if (error) {
-            toast.error("Erreur lors de la mise à jour du mot de passe.", {
-                description: error.message
-            });
-        } else {
-            toast.success("Mot de passe mis à jour !");
-            router.push("/");
-        }
-
-        setLoading(false);
-    };
+    const {
+        newPassword,
+        setNewPassword,
+        confirmPassword,
+        setConfirmPassword,
+        loading,
+        canReset,
+        handleReset
+    } = useResetPasswordController();
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4">
@@ -88,5 +46,5 @@ export default function ResetPassordPage() {
                 )}
             </div>
         </div>
-    )
+    );
 }
