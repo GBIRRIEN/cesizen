@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { fetchUsersController, deleteUserController } from "./controller";
-import { UserComplement } from "@/types";
+import { FullUser } from "@/types";
 
 
 export default function GestionUsers() {
-    const [users, setUsers] = useState<UserComplement[]>([]);
+    const [users, setUsers] = useState<FullUser[]>([]);
 
     useEffect(() => {
         const loadUsers = async () => {
@@ -18,7 +18,7 @@ export default function GestionUsers() {
         loadUsers();
     }, []);
 
-    const handleDelete = async (user: UserComplement) => {
+    const handleDelete = async (user: FullUser) => {
         const confirmed = window.confirm(`Confirmez-vous la suppression du compte de ${user.prenom} ${user.nom} ? Cette action est irréversible.`);
         if (!confirmed) return;
 

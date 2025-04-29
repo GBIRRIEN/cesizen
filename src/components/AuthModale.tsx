@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { supabase } from '@/lib/supabase';
 import { toast } from "sonner";
-import { sign } from "crypto";
 
 interface AuthModalProps {
   isOpen: boolean;

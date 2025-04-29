@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { Article } from "@/types";
+import { ArticleInsert } from "@/types";
 
 export async function getAllArticles() {
   const { data } = await supabase.from("article").select("*");
@@ -20,7 +20,7 @@ export async function getArticleCategories(articleId: number) {
   return data?.map((item) => item.id_cat) || [];
 }
 
-export async function addArticleWithCategories(article: Article, categoryIds: number[]) {
+export async function addArticleWithCategories(article: ArticleInsert, categoryIds: number[]) {
   const { data: insertedArticle } = await supabase
     .from("article")
     .insert([article])
@@ -37,7 +37,7 @@ export async function addArticleWithCategories(article: Article, categoryIds: nu
   await supabase.from("art_cat").insert(associations);
 }
 
-export async function updateArticleWithCategories(articleId: number, article: Article, categoryIds: number[]) {
+export async function updateArticleWithCategories(articleId: number, article: ArticleInsert, categoryIds: number[]) {
   await supabase.from("article").update(article).eq("id", articleId);
   await supabase.from("art_cat").delete().eq("id_art", articleId);
 

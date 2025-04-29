@@ -2,6 +2,7 @@
 
 import { fetchUsersService, deleteUserService } from "./service";
 import { toast } from "sonner";
+import { FullUser } from "@/types";
 
 export const fetchUsersController = async () => {
   try {
