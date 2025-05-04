@@ -80,7 +80,7 @@ export default function ExerciceRespirationPage() {
             {hasStarted ? (
                 <>
                     <div className="text-5xl font-semibold mt-10">{getPhaseLabel(phase)}</div>
-                    <div className="text-[100px] font-bold">{timeLeft}</div>
+                    <div data-testid="timer" className="text-[100px] font-bold">{timeLeft}</div>
                     <Button variant="destructive" onClick={handleStop}>
                         Arrêtez l'exercice
                     </Button>

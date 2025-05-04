@@ -74,6 +74,7 @@ export default function GestionAffirmations() {
                 <Card key={a.id}>
                     <CardContent className="flex flex-col md:flex-row items-center gap-2 p-4">
                         <Input
+                            data-testid={`affirmation-libelle-${encodeURIComponent(a.libelle ?? "")}`}
                             className="flex-1"
                             value={a.libelle ?? ""}
                             onChange={(e) =>

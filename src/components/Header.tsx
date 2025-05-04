@@ -5,7 +5,7 @@ import { Menu, X, House, Blocks, Newspaper, UserRoundPlus, UserRound } from "luc
 import { Montserrat } from "next/font/google";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
-import AuthModal from "./AuthModale";
+import AuthModal from "./AuthModal";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -54,7 +54,7 @@ export default function Header() {
           Activités
         </a>
         {user ? (
-          <a href="/compte" className="flex text-gray-600 hover:text-gray-900">
+          <a href="/compte" className="mon-compte flex text-gray-600 hover:text-gray-900">
             <UserRound className="mr-1" />
             Mon compte
           </a>
@@ -89,7 +89,7 @@ export default function Header() {
             <p className="border-b-2 border-white pb-1">Activités</p>
           </a>
           {user ? (
-            <a href="/compte" className="flex text-white">
+            <a href="/compte" className="mon-compte flex text-white">
               <UserRound color="white" className="mr-3" />
               <p className="border-b-2 border-white pb-1">Mon compte</p>
             </a>

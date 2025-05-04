@@ -49,7 +49,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-md transition-opacity" onClick={onClose} />
-      <div className="relative bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="auth-modal relative bg-white p-6 rounded-lg shadow-lg w-96">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-600">
           <X size={24} />
         </button>
