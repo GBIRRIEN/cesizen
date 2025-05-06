@@ -7,7 +7,8 @@ import {
   fetchUserComplement,
   updateUserComplement,
   deleteUserComplement,
-  deleteUserFromServer
+  deleteUserFromServer,
+  signOutUser
 } from "@/app/compte/gestion-compte/service";
 
 export function useGestionCompteController() {
@@ -18,18 +19,23 @@ export function useGestionCompteController() {
   const [confirmationEmail, setConfirmationEmail] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { user, complement } = await fetchUserComplement();
-      if (!user || !complement) return;
+  const loadUserData = async () => {
+    const { user, complement } = await fetchUserComplement();
+    if (!user || !complement) return;
 
-      setUser(user);
-      setUserInfo(complement);
-      setForm({ nom: complement.nom, prenom: complement.prenom, email: user.email ?? "" });
-      setInitialForm({ nom: complement.nom, prenom: complement.prenom, email: user.email ?? "" });
+    setUser(user);
+    setUserInfo(complement);
+    const newForm = {
+      nom: complement.nom,
+      prenom: complement.prenom,
+      email: user.email ?? ""
     };
+    setForm(newForm);
+    setInitialForm(newForm);
+  };
 
-    fetchData();
+  useEffect(() => {
+    loadUserData();
   }, []);
 
   const handleChange = (e: any) => {
@@ -42,10 +48,10 @@ export function useGestionCompteController() {
   const handleSave = async () => {
     if (!user) return;
 
-    await updateUserComplement(user.id, form.nom, form.prenom);
-
-    setInitialForm(form);
+    await updateUserComplement(user.id, form);
     toast.success("Modifications enregistrées");
+
+    await loadUserData();
   };
 
   const handleDeleteAccount = async () => {
@@ -66,6 +72,7 @@ export function useGestionCompteController() {
 
     toast.success("Votre compte a bien été supprimé. À bientôt !");
     router.push("/");
+    signOutUser();
   };
 
   return {

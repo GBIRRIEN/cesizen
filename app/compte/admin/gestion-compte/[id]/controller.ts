@@ -1,15 +1,16 @@
 "use server";
 
 import { fetchAdminInfo, updateAdmin, deleteAdmin } from "./service";
-import { toast } from "sonner";
+
+console.log("contoller chargé");
 
 export const fetchAdminController = async (id: string) => {
   try {
     const admin = await fetchAdminInfo(id);
-    if (!admin) throw new Error("Admin non trouvé");
+    console.log("✅ fetchAdminController admin trouvé:", admin);
     return admin;
   } catch (error) {
-    toast.error("Impossible de charger les données du compte.");
+    console.error("Erreur dans fetchAdminController :", error);
     return null;
   }
 };
@@ -17,9 +18,9 @@ export const fetchAdminController = async (id: string) => {
 export const updateAdminController = async (id: string, nom: string, prenom: string) => {
   try {
     await updateAdmin(id, nom, prenom);
-    toast.success("Modifications enregistrées");
+    return { success: true };
   } catch (error) {
-    toast.error("Erreur lors de la mise à jour du compte.");
+    return { success: false };
   }
 };
 
@@ -29,16 +30,13 @@ export const deleteAdminController = async (
   actualEmail: string
 ) => {
   if (emailConfirmation !== actualEmail) {
-    toast.error("Email de confirmation incorrect");
-    return false;
+    return { success: false, reason: "email-mismatch" };
   }
 
   try {
     await deleteAdmin(id);
-    toast.success("Compte supprimé");
-    return true;
+    return { success: true };
   } catch (error) {
-    toast.error("Erreur lors de la suppression du compte.");
-    return false;
+    return { success: false };
   }
 };

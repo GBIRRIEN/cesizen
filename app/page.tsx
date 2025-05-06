@@ -5,15 +5,10 @@ import { Inter, Montserrat } from "next/font/google";
 import { Bookmark, BookmarkCheck, Brain, HeartPulse } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/src/components/ui/card"
 import {
   Carousel,

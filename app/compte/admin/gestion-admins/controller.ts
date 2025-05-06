@@ -7,7 +7,7 @@ export async function fetchAdmins(): Promise<FullUser[]> {
     const userComplements = await getAdminUserComplements();
     if (!userComplements) return [];
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/get-admins`, {
+    const response = await fetch('http://localhost:3000/api/get-admins', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: userComplements.map((u) => u.id) }),

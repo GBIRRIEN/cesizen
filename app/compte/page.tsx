@@ -16,7 +16,7 @@ import { useCompteController } from "./controller";
 
 export default function Compte() {
     const { userNom, userPrenom, isAdmin, handleLogout } = useCompteController();
-
+    
     return (
         <div className="flex flex-col items-center justify-start min-h-screen pt-32 space-y-8 px-4">
             <h1 className="text-2xl font-bold">Espace Mon Compte</h1>

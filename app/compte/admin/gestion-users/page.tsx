@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { fetchUsersController, deleteUserController } from "./controller";
 import { FullUser } from "@/types";
-
+import { toast } from "sonner";
 
 export default function GestionUsers() {
     const [users, setUsers] = useState<FullUser[]>([]);
@@ -13,7 +13,11 @@ export default function GestionUsers() {
     useEffect(() => {
         const loadUsers = async () => {
             const data = await fetchUsersController();
-            if (data) setUsers(data);
+            if (data) {
+                setUsers(data);
+            } else {
+                toast.error("Erreur lors du chargement des utilisateurs.");
+            }
         };
         loadUsers();
     }, []);
@@ -25,6 +29,9 @@ export default function GestionUsers() {
         const success = await deleteUserController(user.id);
         if (success) {
             setUsers((prev) => prev.filter((u) => u.id !== user.id));
+            toast.success("Compte supprimé avec succès");
+        } else {
+            toast.error("Erreur lors de la suppression.");
         }
     };
 

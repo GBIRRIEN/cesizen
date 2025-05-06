@@ -9,6 +9,7 @@ import {
   updateAdminController,
   deleteAdminController
 } from "./controller";
+import { toast } from "sonner";
 
 export default function GestionCompteAdmin() {
   const { id } = useParams();
@@ -19,11 +20,16 @@ export default function GestionCompteAdmin() {
   const [confirmationEmail, setConfirmationEmail] = useState("");
 
   useEffect(() => {
+    console.log("ID reçu dans useEffect:", id);
+
     const fetchData = async () => {
       if (!id || typeof id !== "string") return;
 
       const admin = await fetchAdminController(id);
+      console.log("Admin: ", admin);
+
       if (!admin) {
+        toast.error("Impossible de charger les données du compte.");
         router.push("/compte/admin/gestion-admins");
         return;
       }
@@ -35,7 +41,7 @@ export default function GestionCompteAdmin() {
     fetchData();
   }, [id]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
@@ -44,16 +50,26 @@ export default function GestionCompteAdmin() {
 
   const handleSave = async () => {
     if (typeof id !== "string") return;
-    await updateAdminController(id, form.nom, form.prenom);
-    setInitialForm({ ...form });
+    const res = await updateAdminController(id, form.nom, form.prenom);
+    if (res.success) {
+      toast.success("Modifications enregistrées");
+      setInitialForm({ ...form });
+    } else {
+      toast.error("Erreur lors de la mise à jour du compte.");
+    }
   };
 
   const handleDelete = async () => {
     if (typeof id !== "string") return;
 
-    const success = await deleteAdminController(id, confirmationEmail, form.email);
-    if (success) {
+    const res = await deleteAdminController(id, confirmationEmail, form.email);
+    if (res.success) {
+      toast.success("Compte supprimé");
       router.push("/compte/admin/gestion-admins");
+    } else if (res.reason === "email-mismatch") {
+      toast.error("Email de confirmation incorrect");
+    } else {
+      toast.error("Erreur lors de la suppression du compte.");
     }
   };
 

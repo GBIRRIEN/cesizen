@@ -17,7 +17,10 @@ export async function registerAdminUser(form: { email: string; password: string;
 
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error || !data.user) {
-        return { success: false, message: "Erreur lors de la création du compte." };
+        console.error("SignUp error :", error);
+        return { 
+            success: false, 
+            message: error?.message || "Erreur lors de la création du compte." };
     }
 
     const { error: complementError } = await supabase

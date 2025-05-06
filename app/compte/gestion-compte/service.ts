@@ -15,15 +15,11 @@ export async function fetchUserComplement() {
   return { user, complement: data };
 }
 
-export async function updateUserComplement(userId: string, form: any, currentEmail: string | null) {
+export async function updateUserComplement(userId: string, form: any) {
   const { error } = await supabase
     .from("userComplement")
     .update({ nom: form.nom, prenom: form.prenom })
     .eq("id", userId);
-
-  if (!error && form.email !== currentEmail) {
-    await supabase.auth.updateUser({ email: form.email });
-  }
 
   return error;
 }

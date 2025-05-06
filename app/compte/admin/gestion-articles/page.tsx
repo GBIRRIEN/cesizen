@@ -5,7 +5,6 @@ import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/components/ui/dialog";
 import { Check } from "lucide-react";
-
 import { useArticlesController } from "@/app/compte/admin/gestion-articles/controller";
 
 export default function GestionArticles() {
