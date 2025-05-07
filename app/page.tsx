@@ -18,6 +18,7 @@ import {
   CarouselPrevious,
 } from "@/src/components/ui/carousel"
 import { Button } from "@/src/components/ui/button";
+import { useArticlesController } from './controller';
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"]});
