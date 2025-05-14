@@ -17,6 +17,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [prenom, setPrenom] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setPrenom("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
   }, [isLoginMode]);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setPrenom("");
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
       setErrorMessage("");
       setSuccessMessage("");
     }
@@ -57,10 +60,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {!showResetPassword ? (
           <>
             <div className="flex justify-center mb-4">
-              <button onClick={() => setIsLoginMode(true)} className={`px-4 py-2 rounded-l-lg ${isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
+              <button onClick={() => setIsLoginMode(true)} className={`px-4 py-2 rounded-l-lg ${isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600 cursor-pointer"}`}>
                 Se connecter
               </button>
-              <button onClick={() => setIsLoginMode(false)} className={`px-4 py-2 rounded-r-lg ${!isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600"}`}>
+              <button onClick={() => setIsLoginMode(false)} className={`px-4 py-2 rounded-r-lg ${!isLoginMode ? "bg-green-600 text-white" : "bg-gray-200 text-gray-600 cursor-pointer"}`}>
                 Créer un compte
               </button>
             </div>
@@ -94,6 +97,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     }, 300)
                   }
                 } else {
+                  if (password !== confirmPassword) {
+                    setErrorMessage("Les mots de passe ne correspondent pas.");
+                    setLoading(false);
+                    return;
+                  }
+
                   const { data: { user }, error: signupError } = await supabase.auth.signUp({
                     email,
                     password
@@ -134,11 +143,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               )}
               <input type="email" placeholder="Email" className="w-full p-2 border rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} required />
               <input type="password" placeholder="Mot de passe" className="w-full p-2 border rounded-md" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50" disabled={loading}>
+              {!isLoginMode && (
+                <>
+                  <input type="password" placeholder="Confirmer le mot de passe" className="w-full p-2 border rounded-md" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required/>
+                </>
+              )}
+              <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50 cursor-pointer" disabled={loading}>
                 { loading ? "Chargement..." : isLoginMode ? "Se connecter" : "S'inscrire"}
               </button>
               {isLoginMode && !showResetPassword && (
-                <button type="button" onClick={() => setShowResetPassword(true)} className="text-sm text-blue-600 hover:underline">
+                <button type="button" onClick={() => setShowResetPassword(true)} className="text-sm text-blue-600 hover:underline cursor-pointer">
                   Mot de passe oublié ?
                 </button>
               )}
@@ -158,7 +172,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               className="w-full p-2 border rounded-md"
             />
             <button
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 cursor-pointer"
               onClick={async () => {
                 setLoading(true);
                 setResetSuccess(false);
