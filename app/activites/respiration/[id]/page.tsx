@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/src/components/ui/button";
 import { Phase, ExerciceRespiration } from "@/types";
 import { fetchExerciceById } from "./service";
@@ -81,16 +80,16 @@ export default function ExerciceRespirationPage() {
                 <>
                     <div className="text-5xl font-semibold mt-10">{getPhaseLabel(phase)}</div>
                     <div data-testid="timer" className="text-[100px] font-bold">{timeLeft}</div>
-                    <Button variant="destructive" onClick={handleStop}>
+                    <Button className="cursor-pointer" variant="destructive" onClick={handleStop}>
                         Arrêtez l'exercice
                     </Button>
                 </>
             ) : (
-                <Button onClick={handleStart} className="mt-8">
+                <Button onClick={handleStart} className="mt-8 bg-green-500 hover:bg-green-600 cursor-pointer">
                     Démarrer l'exercice
                 </Button>
             )}       
-            <Button variant="outline" onClick={() => router.push("/activites/respiration")}>
+            <Button className="cursor-pointer" variant="outline" onClick={() => router.push("/activites/respiration")}>
                 Revenir au choix
             </Button>
         </div>
