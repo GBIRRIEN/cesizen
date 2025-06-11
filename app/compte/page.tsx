@@ -75,7 +75,7 @@ export default function Compte() {
                     </div>
                 </>
             )}
-            <button onClick={handleLogout} className="px-6 py-2 mb-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+            <button onClick={handleLogout} className="px-6 py-2 mb-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition cursor-pointer">
                 Se déconnecter
             </button>
         </div>
