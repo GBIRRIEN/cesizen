@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CESIZen – Application de Bien-Être pour Étudiants
 
-## Getting Started
+CESIZen est une application web destinée aux étudiants du CESI, visant à améliorer leur bien-être mental à travers des parcours guidés, des exercices de respiration, des articles informatifs, et des diagnostics personnalisés.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Architecture du projet
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+L’application repose sur une stack moderne centrée autour de **Next.js** et **Supabase**, avec déploiement automatisé via **Vercel**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Technologies utilisées
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend** : Next.js 14 (App Router, Server Components)
+- **Backend** : Supabase (authentification, base de données PostgreSQL, stockage)
+- **Base de données** : PostgreSQL (via Supabase)
+- **Déploiement** : Vercel (intégré à GitHub)
+- **CI/CD** : GitHub + Vercel
+- **Design & UI** : Tailwind CSS, shadcn/ui
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Installation et déploiement
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Pré-requis
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js ≥ 18
+- Compte Supabase
+- Compte GitHub
+- Vercel CLI (si déploiement local)
 
-## Deploy on Vercel
+### Étapes d’installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Cloner le dépôt** :
+    git clone https://github.com/votre-utilisateur/cesizen.git
+    cd cesizen
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Installer les dépendances** :
+    npm install
+
+3. **Configurer les variables d’environnement** :
+Créer un fichier .env.local à la racine du projet :
+
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+4. **Lancer le projet en développement** :
+    npm run dev
+
+5. **Déploiement sur Vercel** :
+Le projet est automatiquement déployé à chaque push sur la branche main (production) et dev (préproduction).
+Pour un déploiement manuel :
+    vercel --prod
+
+## Fonctionnement de l’authentification
+CESIZen utilise Supabase Auth pour gérer l’authentification :
+- Création de compte : par email et mot de passe
+- Sessions : gérées automatiquement côté client via Supabase JS SDK
+- Séparation des rôles :
+    - User : utilisateur classique
+    - Admin : accès aux pages /compte/admin/*
+- Protection des routes admin :
+    - Via un layout spécifique (layout.tsx) dans le dossier compte/admin/
+    - Ce layout vérifie le rôle de l’utilisateur au chargement avant d’autoriser l’accès
+
+## Environnements
+Le projet utilise les environnements suivants :
+
+Production	https://cesizen.vercel.app	main
+Préproduction	https://cesizen-git-dev.vercel.app	dev
+Local	http://localhost:3000	N/A
+
+## Auteur
+Guillaume BIRRIEN
+
+Projet encadré dans le cadre de la formation CDA de CESI
