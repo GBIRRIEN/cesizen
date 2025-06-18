@@ -73,3 +73,21 @@ Local	http://localhost:3000	N/A
 Guillaume BIRRIEN
 
 Projet encadré dans le cadre de la formation CDA de CESI
+
+# VERSIONS
+
+## v1.0.0 "Relax"
+
+Voici la première version de CESIZen !
+
+## v1.0.1 "Cliquez"
+
+11/06/2025
+-Ajout de la classe Tailwind 'cursor-pointer' sur certains boutons où elle manquait.
+
+## v1.0.2 "Respirez"
+
+11/06/2025
+-Modification logique du code des exercices personnalisés :
+-Séparation de la logique de la page
+-Gestion du SearchParams sur une autre page pour résoudre le conflit avec le client component
