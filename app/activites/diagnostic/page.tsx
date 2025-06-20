@@ -20,9 +20,11 @@ export default function Diagnostic() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [resultsConfig, setResultsConfig] = useState<DiagnosticResult[]>([]);
 
+    // Récupération des données au chargement de la page
     useEffect(() => {
         const init = async () => {
             try {
+                // Récupère en parallèle les affirmations, la config des messages, et le rôle de l'utilisateur
                 const [opt, conf, role] = await Promise.all([
                     fetchAffirmations(),
                     fetchResultsConfig(),
@@ -38,12 +40,14 @@ export default function Diagnostic() {
         init();
     }, []);
 
+    // Coche ou décoche une affirmation
     const toggleOption = (id: number) => {
         setSelected((prev) =>
             prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
         );
     };
 
+    // Soumet le diagnostic : calcule le score et récupère le message correspondant
     const submitQuizz = () => {
         const total = calculateScore(selected, options);
         const msg = getDiagnosticMessage(total, resultsConfig);
@@ -58,6 +62,7 @@ export default function Diagnostic() {
                 Cochez les affirmations qui vous correspondent en ce moment :
             </p>
 
+            {/* Bloc des affirmations sous forme de carte */}
             <Card>
                 <CardContent className="py-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -78,6 +83,7 @@ export default function Diagnostic() {
 
             <Button onClick={submitQuizz} className="w-full bg-green-500 hover:bg-green-600">Soumettre</Button>
 
+            {/* Résultat affiché après soumission */}
             {score !== null && (
                 <Card className="mt-4">
                     <CardContent className="p-4">
@@ -89,6 +95,7 @@ export default function Diagnostic() {
                 </Card>
             )}
             
+            {/* Options d’administration visibles uniquement si l’utilisateur est admin */}
             {isAdmin && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                     <Button
