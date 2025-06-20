@@ -7,6 +7,7 @@ import { Phase, ExerciceRespiration } from "@/types";
 import { fetchExerciceById } from "./service";
 import { getNextPhase, getPhaseLabel } from "./controller";
 
+// Page exo respiration
 export default function ExerciceRespirationPage() {
     const params = useParams();
     const router = useRouter();
