@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useCompteController } from "./controller";
 
+// Page d'affiche du compte utilisateur
 export default function Compte() {
     const { userNom, userPrenom, isAdmin, handleLogout } = useCompteController();
     
