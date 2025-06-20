@@ -14,10 +14,12 @@ export default function Respiration() {
     const [custom, setCustom] = useState({ inspiration: 4, apnee: 4, expiration: 4 });
     const { navigateToExercice } = useExerciceNavigator();
 
+    // Gère la soumission du formulaire d'exercice personnalisé (redirige avec paramètres dans l'URL)
     const handleCustomSubmit = () => {
         router.push(`/activites/respiration/personnalise?inspiration=${custom.inspiration}&apnee=${custom.apnee}&expiration=${custom.expiration}`);
     }
 
+    // Chargement initial des exercices de respiration depuis Supabase
     useEffect(() => {
         const load = async () => {
             const data = await fetchExercices();
@@ -29,6 +31,8 @@ export default function Respiration() {
     return (
         <div className="px-6 py-8 max-w-2xl mx-auto space-y-6">
             <h2 className="text-2xl font-bold text-center">Choisissez un exercice de respiration</h2>
+
+            {/* Affiche les exercices disponibles sous forme de cartes */}
             {exercices.map((ex) => (
                 <Card key={ex.id}>
                     <CardContent className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -44,6 +48,8 @@ export default function Respiration() {
                     </CardContent>
                 </Card>
             ))}
+
+            {/* Bloc pour configurer un exercice personnalisé */}
             <Card key="personnalise">
                 <CardContent className="p-4 space-y-4">
                         <p className="text-lg font-medium">Configurer un exercice</p>

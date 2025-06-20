@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description: "L'application de votre santé mentale",
 };
 
+// Définit la structure commune de toutes les pages (ex. : Header, styles globaux, notifications)
 export default function RootLayout({
   children,
 }: Readonly<{

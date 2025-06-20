@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "700"]});
 
 export default function Activites() {
+    // Données des activités disponibles
     const activites = [
         {
             icon: <HeartPulse className="text-green-600 w-6 h-6 mr-2" />,
@@ -38,6 +39,7 @@ export default function Activites() {
                 chaque activité est pensée pour vous aider à retrouver sérénité et équilibre.<br />
             </p>
 
+            {/* Grille contenant les différentes cartes d’activités */}
             <div className="grid grid-cols-1 gap-4 mt-6">
                 {activites.map((activite, index) => (
                     <Link href={`/activites/${activite.link}`} key={index}>
